@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     environment {
         CONTAINER_NAME = "nestjs-app"
         IMAGE_NAME     = "nestjs-image"
@@ -11,34 +11,47 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                // Double quotes allow Groovy to interpolate, with '.'  for build context
                 sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
         stage('Stop & Remove Previous Container') {
             steps {
-                // -f (force) stops and removes in a single step safely
                 sh "docker rm -f ${CONTAINER_NAME} || true"
             }
         }
 
         stage('Run Docker Container') {
             steps {
-                // Kept on one line or joined with \ to avoid command splitting
                 sh "docker run -d -p ${PORT}:${PORT} --name ${CONTAINER_NAME} ${IMAGE_NAME}"
             }
         }
+    }
 
-        stage('Send  Email   Notification') {
-            steps {
-                // Correct step name is 'emailext' (Email Extension Plugin)
-                emailext(
-                    to: "${EMAIL}",
-                    subject: "NestJS Application Deployed Successfully on EC2!",
-                    body: "Your NestJS application has been successfully deployed! Visit: http://3.26.18.6:${PORT}/"
-                )
-            }
+    post {
+        success {
+            emailext(
+                to: "${EMAIL}",
+                from: "${EMAIL}",
+                replyTo: "${EMAIL}",
+                subject: "Jenkins Build #${BUILD_NUMBER} - Deployment Successful",
+                body: """
+Jenkins Deployment Successful
+
+Job: ${JOB_NAME}
+Build: #${BUILD_NUMBER}
+Status: SUCCESS
+
+NestJS application has been successfully deployed on AWS EC2.
+
+Application:
+http://3.26.18.6:${PORT}/
+
+Jenkins Build:
+${BUILD_URL}
+""",
+                mimeType: 'text/plain'
+            )
         }
     }
 }
