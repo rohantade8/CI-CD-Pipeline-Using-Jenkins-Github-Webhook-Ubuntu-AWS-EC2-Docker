@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Build Docker Image') {
             steps {
-                // Double quotes allow Groovy to interpolate, with '.' for build context
+                // Double quotes allow Groovy to interpolate, with '.'  for build context
                 sh "docker build -t ${IMAGE_NAME} ."
             }
         }
@@ -30,7 +30,7 @@ pipeline {
             }
         }
 
-        stage('Send Email Notification') {
+        stage('Send Email  Notification') {
             steps {
                 // Correct step name is 'emailext' (Email Extension Plugin)
                 emailext(
