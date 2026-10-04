@@ -29,13 +29,13 @@ pipeline {
     }
 
     post {
-        success {
-            emailext(
-                to: "${EMAIL}",
-                from: "${EMAIL}",
-                replyTo: "${EMAIL}",
-                subject: "Jenkins Build #${BUILD_NUMBER} - Deployment Successful",
-                body: """
+    success {
+        emailext(
+            to: "${EMAIL}",
+            from: "${EMAIL}",
+            replyTo: "${EMAIL}",
+            subject: "Jenkins Build #${BUILD_NUMBER} - Deployment Successful",
+            body: """
 Jenkins Deployment Successful
 
 Job: ${JOB_NAME}
@@ -50,8 +50,7 @@ http://3.26.18.6:${PORT}/
 Jenkins Build:
 ${BUILD_URL}
 """,
-                mimeType: 'text/plain'
-            )
-        }
+            mimeType: 'text/plain'
+        )
     }
 }
