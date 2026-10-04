@@ -30,7 +30,7 @@ pipeline {
             }
         }
 
-        stage('Send Email  Notification') {
+        stage('Send  Email   Notification') {
             steps {
                 // Correct step name is 'emailext' (Email Extension Plugin)
                 emailext(
